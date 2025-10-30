@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+
+<!-- Firebase SDKs -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+  // ===== Firebase Config =====
+  const firebaseConfig = {
+    apiKey: "AIzaSyCCOUhkqJILjR1qmfmQAfmQ-WkeSvnIFR0",
+    authDomain: "invest-9731f.firebaseapp.com",
+    projectId: "invest-9731f",
+    storageBucket: "invest-9731f.firebasestorage.app",
+    messagingSenderId: "1054310074316",
+    appId: "1:1054310074316:web:73a51c619d03a67c873f69",
+    measurementId: "G-XHBM842TER"
+  };
+  // ============================
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Login Function
+  window.login = async function() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      // Login successful → Redirect to dashboard
+      window.location.href = "dashboard.html";
+    } catch (e) {
+      document.getElementById("msg").innerText = "❌ " + e.message;
+    }
+  }
+</script>
+
+<style>
+body { font-family:"Segoe UI"; display:flex; justify-content:center; align-items:center; height:100vh; background:#6ec6ff; margin:0; }
+.form-box { background: rgba(0,0,0,0.6); padding:30px; border-radius:15px; text-align:center; color:white; }
+input { width:250px; padding:10px; margin:8px 0; border-radius:8px; border:none; }
+button { padding:12px 25px; border:none; border-radius:25px; cursor:pointer; margin-top:10px; background:#111; color:white; transition:0.3s; }
+button:hover { background:#ff6ec7; transform:scale(1.05); }
+a { display:block; color:white; margin-top:15px; text-decoration:none; }
+</style>
+</head>
+<body>
+
+<div class="form-box">
+  <h2>লগইন</h2>
+  <input type="email" id="email" placeholder="ইমেইল" required><br>
+  <input type="password" id="password" placeholder="পাসওয়ার্ড" required><br>
+  <button onclick="login()">লগইন করুন</button>
+  <a href="register.html">একাউন্ট নেই? রেজিস্ট্রেশন করুন</a>
+  <p id="msg"></p>
+</div>
+
+</body>
+</html>

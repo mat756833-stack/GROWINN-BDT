@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register</title>
+
+<style>
+body { font-family:"Segoe UI"; display:flex; justify-content:center; align-items:center; height:100vh; background:#42f587; margin:0; }
+.form-box { background: rgba(0,0,0,0.6); padding:30px; border-radius:15px; text-align:center; color:white; }
+input { width:250px; padding:10px; margin:8px 0; border-radius:8px; border:none; }
+button { padding:12px 25px; border:none; border-radius:25px; cursor:pointer; margin-top:10px; background:#111; color:white; transition:0.3s; }
+button:hover { background:#ff6ec7; transform:scale(1.05); }
+a { display:block; color:white; margin-top:15px; text-decoration:none; }
+</style>
+</head>
+<body>
+<div class="form-box">
+  <h2>রেজিস্ট্রেশন</h2>
+  <input type="text" id="name" placeholder="পূর্ণ নাম" required><br>
+  <input type="email" id="email" placeholder="ইমেইল" required><br>
+  <input type="password" id="password" placeholder="পাসওয়ার্ড" required><br>
+  <button onclick="register()">রেজিস্ট্রেশন করুন</button>
+  <a href="login.html">একাউন্ট আছে? লগইন করুন</a>
+  <p id="msg"></p>
+</div>
+
+<script type="module">
+  // Firebase v12 SDK imports
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+  // UPDATED Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCCOUhkqJILjR1qmfmQAfmQ-WkeSvnIFR0",
+    authDomain: "invest-9731f.firebaseapp.com",
+    projectId: "invest-9731f",
+    storageBucket: "invest-9731f.firebasestorage.app",
+    messagingSenderId: "1054310074316",
+    appId: "1:1054310074316:web:73a51c619d03a67c873f69",
+    measurementId: "G-XHBM842TER"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  window.register = async function(){
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const msg = document.getElementById("msg");
+
+    if(!name || !email || !password){ msg.innerText = "সব ফিল্ড পূরণ করুন"; return; }
+
+    try{
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = userCredential.user.uid;
+      await setDoc(doc(db, "users", uid), { name: name, email: email, points: 0, balance: 0 });
+      msg.innerText = "✅ Registration Successful! Login now.";
+      document.getElementById("name").value = "";
+      document.getElementById("email").value = "";
+      document.getElementById("password").value = "";
+    } catch(e){
+      msg.innerText = "❌ " + e.message;
+    }
+  }
+</script>
+
+</body>
+</html>
